@@ -13,14 +13,17 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
+    // Create new task
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
+    // List of all tasks
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
+    // Update an existing task (completion status)
     public Task updateTask(Integer id, Task updatedTask) {
         Optional<Task> taskOptional = taskRepository.findById((id));
 
@@ -33,13 +36,13 @@ public class TaskService {
         } // Manejo de error con una estructura distinta
     }
 
+    // Delate a task
     public void deleteTask(Integer id) {
-        if (!taskRepository.existsById(id)){
-            throw new RuntimeException("Task not found with ID: " + id);
-        }
+
         taskRepository.deleteById(id);
     }
 
+    // List of uncompleted tasks
     public List<Task> getUncompletedTasks() {
         return taskRepository.findByCompleted(false);
     }

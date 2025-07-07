@@ -1,5 +1,7 @@
-package Metaphorce.Assestment2.Gestion.de.Tareas;
+package Metaphorce.Assessment2.GestionDeTareas.Service;
 
+import Metaphorce.Assessment2.GestionDeTareas.Entity.Task;
+import Metaphorce.Assessment2.GestionDeTareas.Repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,33 +11,39 @@ import java.util.Optional;
 public class TaskService {
 
     @Autowired
-    private TaskRepository taskRepository;
+    TaskRepository taskRepository;
 
+    // Create new task
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
+    // List of all tasks
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+    // Update an existing task (completion status)
+    public Task updateTask(Integer id, Task updatedTask) {
+        Optional<Task> taskOptional = taskRepository.findById((id));
+
+        if (taskOptional.isPresent()) {
+            Task t = taskOptional.get();
+            t.setCompleted(true);
+            return taskRepository.save(t);
+        } else {
+            throw new RuntimeException("Task not found with ID: " + id);
+        } // Manejo de error con una estructura distinta
     }
 
-    public Task updateTask(Long id, Task updatedTask) {
-        return taskRepository.findById(id).map(task -> {
-            task.setTitle(updatedTask.getTitle());
-            task.setCompleted(updatedTask.isCompleted());
-            return taskRepository.save(task);
-        }).orElseThrow(() -> new RuntimeException("Task not found with id " + id)); // Manejo básico de error
-    }
+    // Delate a task
+    public void deleteTask(Integer id) {
 
-    public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
 
+    // List of uncompleted tasks
     public List<Task> getUncompletedTasks() {
-        return taskRepository.findByCompletedFalse();
+        return taskRepository.findByCompleted(false);
     }
 }

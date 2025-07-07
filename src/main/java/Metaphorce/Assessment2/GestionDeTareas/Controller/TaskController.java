@@ -1,4 +1,7 @@
+package Metaphorce.Assessment2.GestionDeTareas.Controller;
 
+import Metaphorce.Assessment2.GestionDeTareas.Entity.Task;
+import Metaphorce.Assessment2.GestionDeTareas.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +13,7 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    private TaskService taskService;
+    TaskService taskService;
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
@@ -24,15 +27,8 @@ public class TaskController {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id)
-                .map(task -> new ResponseEntity<>(task, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Manejo de error para tarea no encontrada
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody Task task) {
         try {
             Task updatedTask = taskService.updateTask(id, task);
             return new ResponseEntity<>(updatedTask, HttpStatus.OK);
@@ -42,7 +38,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
